@@ -3,6 +3,8 @@ package com.codeclan.example.pirateservice.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity // "This is something that needs to be mapped to a database"
 @Table(name = "pirates") // "I want this save in a db called pirates"
@@ -28,11 +30,29 @@ public class Pirate {
     @JoinColumn(name = "ship_id", nullable = false)
     private Ship ship;
 
+    @JsonIgnoreProperties({"pirates"})
+    @ManyToMany
+    @JoinTable(
+            name = "pirates_raid",
+            joinColumns = { @JoinColumn(
+                    name = "pirate_id",
+                    nullable = false,
+                    updatable = false)
+            },
+            inverseJoinColumns = { @JoinColumn(
+                    name = "raid_id",
+                    nullable = false,
+                    updatable = false)
+            }
+    )
+    private List<Raid> raids;
+
     public Pirate(String firstName, String lastName, int age, Ship ship) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.ship = ship;
+        this.raids = new ArrayList<>();
     }
 
     public Pirate() {
@@ -76,5 +96,17 @@ public class Pirate {
 
     public void setShip(Ship ship) {
         this.ship = ship;
+    }
+
+    public List<Raid> getRaids() {
+        return raids;
+    }
+
+    public void setRaids(List<Raid> raids) {
+        this.raids = raids;
+    }
+
+    public void addRaid(Raid raid) {
+        this.raids.add(raid);
     }
 }
