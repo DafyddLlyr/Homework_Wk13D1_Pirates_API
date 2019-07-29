@@ -1,5 +1,7 @@
 package com.codeclan.example.pirateservice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity // "This is something that needs to be mapped to a database"
@@ -21,10 +23,16 @@ public class Pirate {
     @Column(name = "age")
     private int age;
 
-    public Pirate(String firstName, String lastName, int age) {
+    @JsonIgnoreProperties({"pirates"})
+    @ManyToOne
+    @JoinColumn(name = "ship_id", nullable = false)
+    private Ship ship;
+
+    public Pirate(String firstName, String lastName, int age, Ship ship) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
+        this.ship = ship;
     }
 
     public Pirate() {
@@ -60,5 +68,13 @@ public class Pirate {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Ship getShip() {
+        return ship;
+    }
+
+    public void setShip(Ship ship) {
+        this.ship = ship;
     }
 }
